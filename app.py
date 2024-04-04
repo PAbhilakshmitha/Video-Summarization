@@ -109,6 +109,9 @@ def home():
     return f"Hello, This is Jeyesh!"
 
 
+import gunicorn
+
 
 if __name__ == '__main__':
   app.run(debug=True)
+  # gunicorn.run(app, host="0.0.0.0", port=8000, workers=1)

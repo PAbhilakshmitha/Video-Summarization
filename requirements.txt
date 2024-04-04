@@ -1,0 +1,9 @@
+Flask
+transformers
+youtube-transcript-api
+sentencepiece
+googletrans==3.1.0a0
+pytube
+flask-cors
+gTTS
+gunicorn
