@@ -4,14 +4,14 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from googletrans import Translator, constants
 from pprint import pprint
 from pytube import YouTube
-from flask import Flask, request, send_from_directory, render_template
+from flask import Flask, request, send_from_directory, render_template, jsonify, Response
 from gtts import gTTS
 from IPython.display import Audio
 from flask_cors import CORS, cross_origin
 import os
 
 app = Flask(__name__)
-
+app.config['STATIC_FOLDER'] = 'static'
 
 def videoID(link):
     video_id = link.split("=")[1]
@@ -86,9 +86,10 @@ def get_summary(url, lang):
 
   language = code
   myobj = gTTS(text=translation1, lang=language, slow=False)
-  myobj.save("summary.mp3")
-  os.system("mpg321 summary.mp3")
+  myobj.save("static/summary.mp3")
+  os.system("mpg321 static/summary.mp3")
 
+  return translation1
   
 
 
@@ -102,13 +103,31 @@ def home():
     url = request.form["url"]  # Access form data by name attribute
     lang = request.form["lang"]
     if (url != '') and (lang != ''):
-      get_summary(url, lang)
-      filename = "summary.mp3"
+      summary = get_summary(url, lang)
+      filename = "static/summary.mp3"
+      # audio_file = open(filename, "rb")
+      # data = {"audio_data": audio_file.read(), "summary": summary}
+      # response = jsonify(data)
+      # response.headers.set('Content-Type', 'application/json')
+      # return send_from_directory("./",filename, as_attachment=True)
+      return render_template("output.html", summary=summary)
+    return f"Invalid Input Parameters!"
 
-      return send_from_directory("./",filename, as_attachment=True)
-    return f"Hello, This is Jeyesh!"
 
+@app.route("/stream_audio")
+def stream_audio():
+    audio_file = open("static/summary.mp3", "rb")  # Replace with your path
+    response = Response(audio_file, mimetype="audio/mpeg")
+    response.headers.set('Content-Disposition', 'attachment', filename='static/summary.mp3')
+    return response
+
+@app.route("/download_audio")
+def download_audio():
+    audio_path = "summary.mp3"  # Replace with your path
+    return send_from_directory( app.config['STATIC_FOLDER'],audio_path, mimetype="audio/mpeg", as_attachment=True)
+  
 
 
 if __name__ == '__main__':
   app.run(debug=True)
+  # gunicorn.run(app, host="0.0.0.0", port=8000, workers=1)
