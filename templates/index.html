@@ -9,30 +9,48 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
+    <link rel="shortcut icon" href="https://img1.wsimg.com/isteam/ip/fac3788f-4714-4318-ae9f-2664593f460d/video_summary_ai_logo_enhanced_size.jpg" type="image/x-icon">
 </head>
 <body>
   <!-- <h1 class="poppins-thin text-center">Summarize</h1> -->
   <div class="container d-flex justify-content-center align-items-center min-vh-100">
     
-    <div class="row rounder-5 border p-3 shadow">
-      <div class="col-md-6">
+    <div class="row rounded-2 border p-3 shadow">
+      <div class="col-md-6 rounded-2 p-3 d-flex justify-content-center align-items-center">
         <img src="https://images.ctfassets.net/1e6ajr2k4140/5Xx2WQPJ2OZejMVhlZA84X/375dfcfecdbf8d09fc060f31ec69d17d/Frame_31613475.svg" class="img-fluid" style="width: 1000px;" alt="">
       </div>
       <div class="col-md-6 shadow right-box">
 
-        <div class="d-flex justify-content-center mt-3">
+        <div class="d-flex justify-content-center align-items-center mt-5">
           <form method="POST"> 
-            <h4 class="poppins-thin text-center">Holistic Video Summarizer</h4>
+            <h3 class="poppins-thin text-center">Holistic Video Summarizer</h3>
             <label for="url" class="form-label mt-3">Enter URL:</label>
             <input type="text" name="url" class="form-control form-control-lg" id="url">
-            <label for="lang">Enter Language:</label>
+            <label for="lang" class="form-label">Enter Language:</label>
             <input type="text" class="form-control form-control-lg" name="lang" id="lang">
             <button type="submit" class="btn btn-lg btn-primary w-100 mt-2 mb-2" >Submit</button>
           </form>
         </div>
       </div>
     </div>
-  </div>  
+  </div> 
+  <script>
+    async function playAudioAndDisplayText() {
+  const response = await fetch("/stream_audio_and_text");
+  const data = await response.json();
+
+  // Create audio object and URL as before
+  const audioBlob = new Blob([data.audio_data], {type: "audio/mpeg"});
+  const audioUrl = URL.createObjectURL(audioBlob);
+  const audio = new Audio(audioUrl);
+
+  // Access and display the text message
+  const text = data.text;
+  const textElement = document.getElementById("text-message"); // Assuming you have an element
+  textElement.textContent = text;
+
+  audio.play();
+}
+  </script>
 </body>
 </html>
